@@ -38,12 +38,14 @@ def set_boundary_constraints(
         curdir / "etys_boundary_capabilities.csv", index_col="boundary_name"
     ).capability_mw
 
-    year = n.meta["wildcards"]["year"]
+    year = n.meta.get("year", n.meta["wildcards"].get("year"))
     future_caps = pd.read_csv(
         curdir / "future_etys_boundary_capabilities.csv",
         index_col=["boundary_name", "year"],
     ).capability_mw.xs(year, level="year")
-    manual_caps = pd.DataFrame(n.meta["etys"]["manual_future_capacities"]).loc[year]
+    manual_caps = pd.DataFrame(n.meta["etys"]["manual_future_capacities"]).loc[
+        str(year)
+    ]
     etys_capacities_all_boundaries = pd.concat([future_caps, manual_caps]).reindex(
         etys_capacities.index
     )
@@ -104,7 +106,9 @@ def set_boundary_constraints(
     )
 
     boundary_scaling = n.meta["redispatch"]["monthly_boundary_capability_scaling"]
-    boundary_scaling_sns = pd.Series(boundary_scaling).reindex(n.snapshots.month)
+    boundary_scaling_sns = pd.Series(boundary_scaling).reindex(
+        n.snapshots.month.astype(str)
+    )
     boundary_scaling_sns.index = n.snapshots
     assert boundary_scaling_sns.notnull().all(), "Missing monthly scaling factors"
     bounds = etys_capacities.to_xarray() * boundary_scaling_sns.to_xarray()

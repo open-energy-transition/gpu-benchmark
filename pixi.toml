@@ -5,7 +5,7 @@
 
 [workspace]
 authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
-channels = ["conda-forge", "gurobi"]
+channels = ["conda-forge", "gurobi", "conda-forge/label/dev"]
 name = "gpu-benchmark"
 platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
@@ -37,7 +37,7 @@ lint-install = "lefthook install"
 
 [feature.cpu.dependencies]
 gurobi = { version = ">=13.0.1,<14", channel = "gurobi" }
-highspy = ">=1.15.0"
+highspy = { version = ">=1.13.2.dev0,<14", channel = "conda-forge/label/dev" }
 
 [feature.analyse.dependencies]
 pypsa = ">=1.1.2,<2"
@@ -49,6 +49,7 @@ jupyter = ">=1.1.1,<2"
 analyse = ["analyse"]
 lint = { features = ["lint"], no-default-feature = true }
 cpu = ["cpu"]
+gpu = ["gpu"]
 
 [environments.sync]
 dependencies = { rsync = ">=3.4.2,<4" }

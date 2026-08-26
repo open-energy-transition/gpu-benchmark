@@ -3,3 +3,4 @@ results/*
 logs/*
 analysis/
 pixi.lock
+__pycache__/

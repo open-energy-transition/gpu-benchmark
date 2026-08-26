@@ -47,6 +47,7 @@ SOLVER_OPTIONS: dict[str, dict[str, Any]] = {
         "random_seed": 123,
         "run_crossover": "off",
         "time_limit": TIMELIMIT,
+        "user_bound_scale": -9,
     },
 }
 CUSTOM_CONSTRAINTS_PATH = {

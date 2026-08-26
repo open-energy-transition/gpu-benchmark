@@ -1,2 +1,3 @@
 .*
 pixi.lock
+__pycache__/

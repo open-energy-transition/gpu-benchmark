@@ -22,37 +22,37 @@ case ${SLURM_ARRAY_TASK_ID} in
         CMD="pixi run -e cpu python test_solve.py gurobi models/dispatch_2030.nc --custom_constraints dispatch --dump_mps --condition_dispatch --condition_storage"
         ;;
     1)
-        CMD="pixi run -e gpu python test_solve.py gurobi models/dispatch_2030.nc --custom_constraints dispatch --dump_mps --condition_dispatch"
+        CMD="pixi run -e cpu python test_solve.py gurobi models/dispatch_2030.nc --custom_constraints dispatch --dump_mps --condition_dispatch"
         ;;
     2)
-        CMD="pixi run -e gpu python test_solve.py gurobi models/dispatch_2030.nc --custom_constraints dispatch --dump_mps"
+        CMD="pixi run -e cpu python test_solve.py gurobi models/dispatch_2030.nc --custom_constraints dispatch --dump_mps"
         ;;
     3)
-        CMD="pixi run -e gpu python test_solve.py highs models/dispatch_2030.nc --custom_constraints dispatch --condition_dispatch --condition_storage"
+        CMD="pixi run -e cpu python test_solve.py highs models/dispatch_2030.nc --custom_constraints dispatch --condition_dispatch --condition_storage"
         ;;
     4)
-        CMD="pixi run -e gpu python test_solve.py highs models/dispatch_2030.nc --custom_constraints dispatch --condition_dispatch"
+        CMD="pixi run -e cpu python test_solve.py highs models/dispatch_2030.nc --custom_constraints dispatch --condition_dispatch"
         ;;
     5)
-        CMD="pixi run -e gpu python test_solve.py highs models/dispatch_2030.nc --custom_constraints dispatch"
+        CMD="pixi run -e cpu python test_solve.py highs models/dispatch_2030.nc --custom_constraints dispatch"
         ;;
     6)
         CMD="pixi run -e cpu python test_solve.py gurobi models/redispatch_2030.nc --custom_constraints redispatch --dump_mps --condition_dispatch --condition_storage"
         ;;
     7)
-        CMD="pixi run -e gpu python test_solve.py gurobi models/redispatch_2030.nc --custom_constraints redispatch --dump_mps --condition_dispatch"
+        CMD="pixi run -e cpu python test_solve.py gurobi models/redispatch_2030.nc --custom_constraints redispatch --dump_mps --condition_dispatch"
         ;;
     8)
-        CMD="pixi run -e gpu python test_solve.py gurobi models/redispatch_2030.nc --custom_constraints redispatch --dump_mps"
+        CMD="pixi run -e cpu python test_solve.py gurobi models/redispatch_2030.nc --custom_constraints redispatch --dump_mps"
         ;;
     9)
-        CMD="pixi run -e gpu python test_solve.py highs models/redispatch_2030.nc --custom_constraints redispatch --condition_dispatch --condition_storage"
+        CMD="pixi run -e cpu python test_solve.py highs models/redispatch_2030.nc --custom_constraints redispatch --condition_dispatch --condition_storage"
         ;;
     10)
-        CMD="pixi run -e gpu python test_solve.py highs models/redispatch_2030.nc --custom_constraints redispatch --condition_dispatch"
+        CMD="pixi run -e cpu python test_solve.py highs models/redispatch_2030.nc --custom_constraints redispatch --condition_dispatch"
         ;;
     11)
-        CMD="pixi run -e gpu python test_solve.py highs models/redispatch_2030.nc --custom_constraints redispatch"
+        CMD="pixi run -e cpu python test_solve.py highs models/redispatch_2030.nc --custom_constraints redispatch"
         ;;
     *)
         echo "Error: no command defined for SLURM_ARRAY_TASK_ID=${SLURM_ARRAY_TASK_ID}"

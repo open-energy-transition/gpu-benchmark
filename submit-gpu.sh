@@ -16,7 +16,7 @@
 #SBATCH -n1
 
 # Network filepath - update this with your actual network file path
-cd "/scratch/htc/${USER}/gpu-benchmark" || { echo "Error: failed to cd to /scratch/htc/${USER}/gpu-benchmark"; exit 1; }
+cd "/scratch/gcp1/${USER}/gpu-benchmark" || { echo "Error: failed to cd to /scratch/gcp1/${USER}/gpu-benchmark"; exit 1; }
 
 case ${SLURM_ARRAY_TASK_ID} in
     0)
