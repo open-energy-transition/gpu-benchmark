@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+#
+# SPDX-License-Identifier: MIT
+
+target-version = "py312"
+extend-exclude = [".pixi"]
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "D",   # pydocstyle
+]
+ignore = [
+    "E501",  # line length is handled by the formatter
+    "D100",  # missing docstring in public module
+    "D103",  # missing docstring in public function
+    "D104",  # missing docstring in public package
+]
+
+[lint.per-file-ignores]
+# Notebooks are exploratory: imports are often kept for ad-hoc use in later cells.
+"*.ipynb" = ["F401", "I001", "E402"]
+# Re-exports of the custom constraint functions used by test_solve.py.
+"extras/__init__.py" = ["F401"]
+
+[lint.pydocstyle]
+convention = "google"

@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+#
+# SPDX-License-Identifier: MIT
+
+[workspace]
+authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
+channels = ["conda-forge", "gurobi"]
+name = "gpu-benchmark"
+platforms = ["linux-64", "osx-arm64"]
+version = "0.1.0"
+
+[dependencies]
+pypsa = ">=1.1.2,<2"
+ipython = ">=9.11.0,<10"
+tsam = ">=3.1.2"
+click = ">=8.1,<9"
+yaml = ">=0.2.5,<0.3"
+
+[feature.gpu.target.linux-64.dependencies]
+cuda-nvcc = ">=13.2.51,<14"
+cuda = ">=13.2.0,<14"
+[feature.gpu.dependencies]
+gcc = ">=15.2.0,<15.3"
+cmake = ">=4.2.3,<5"
+[feature.gpu.target.linux-64.pypi-dependencies]
+cupdlpx = ">=0.2.7, <0.3"
+
+[feature.lint.dependencies]
+lefthook = ">=1.13.6,<2"
+ruff = ">=0.14.0,<0.15"
+nbstripout = ">=0.8.1,<0.9"
+
+[feature.lint.tasks]
+lint = "lefthook run pre-commit --all-files"
+lint-install = "lefthook install"
+
+[feature.cpu.dependencies]
+gurobi = { version = ">=13.0.1,<14", channel = "gurobi" }
+highspy = ">=1.15.0"
+
+[feature.analyse.dependencies]
+pypsa = ">=1.1.2,<2"
+plotly = ">=6.6.0,<7"
+ipython = ">=9.11.0,<10"
+jupyter = ">=1.1.1,<2"
+
+[environments]
+analyse = ["analyse"]
+lint = { features = ["lint"], no-default-feature = true }
+cpu = ["cpu"]
+
+[environments.sync]
+dependencies = { rsync = ">=3.4.2,<4" }
+no-default-feature = true
+
+[environments.sync.tasks]
+sync-send = {"cmd" = "rsync -azvh --exclude-from='exclude-send.txt' . z3:{{ dir }}", "args" = ["dir"]}
+sync-receive = {"cmd" = "rsync -azvh --exclude-from='exclude-receive.txt' z3:{{ dir }}", "args" = ["dir"]}
+
+[environments.benchmark]
+features = ["gpu", "cpu"]
+
+[environments.benchmark.tasks.benchmark]
+cmd = "python test_solve.py {{ model }}"
+args = ["model"]

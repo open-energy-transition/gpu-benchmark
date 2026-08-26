@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+#
+# SPDX-License-Identifier: MIT
+
+version = 1
+SPDX-PackageName = "gpu-benchmark"
+SPDX-PackageSupplier = "Open Energy Transition gGmbH <info@openenergytransition.org>"
+SPDX-PackageDownloadLocation = "https://github.com/open-energy-transition/gpu-benchmark"
+
+[[annotations]]
+path = [
+    "extras/*.csv"
+]
+SPDX-FileCopyrightText = "open-energy-transition/gpu-benchmark contributors"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = [
+    "analysis/*.ipynb"
+]
+SPDX-FileCopyrightText = "open-energy-transition/gpu-benchmark contributors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [
+    "pixi.lock",
+]
+SPDX-FileCopyrightText = "open-energy-transition/gpu-benchmark contributors"
+SPDX-License-Identifier = "CC0-1.0"

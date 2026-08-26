@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+# SPDX-FileCopyrightText: 2026 open-energy-transition/gpu-benchmark contributors
+#
+# SPDX-License-Identifier: MIT
+
+pre-commit:
+  parallel: false
+  jobs:
+    - name: ruff-check
+      glob: "*.py"
+      run: ruff check --fix {staged_files}
+      stage_fixed: true
+
+    - name: ruff-format
+      glob: "*.py"
+      run: ruff format {staged_files}
+      stage_fixed: true
+
+    - name: nbstripout
+      glob: "*.ipynb"
+      run: nbstripout {staged_files}
+      stage_fixed: true
+
+    - name: no-large-files
+      run: |
+        for file in {staged_files}; do
+          size=$(wc -c < "$file")
+          if [ "$size" -gt 5242880 ]; then
+            echo "$file is $((size / 1048576))MB (limit 5MB) - is it meant to be tracked?"
+            exit 1
+          fi
+        done
