@@ -57,7 +57,7 @@ no-default-feature = true
 
 [environments.sync.tasks]
 sync-send = {"cmd" = "rsync -azvh --exclude-from='exclude-send.txt' . z3:{{ dir }}", "args" = ["dir"]}
-sync-receive = {"cmd" = "rsync -azvh --exclude-from='exclude-receive.txt' z3:{{ dir }}", "args" = ["dir"]}
+sync-receive = {"cmd" = "rsync -azvh --exclude-from='exclude-receive.txt' z3:{{ dir }}/ ." , "args" = ["dir"]}
 
 [environments.benchmark]
 features = ["gpu", "cpu"]

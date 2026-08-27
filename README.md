@@ -71,8 +71,8 @@ All solvers are given a 1800 s time limit (`TIMELIMIT` in [test_solve.py](test_s
 ## Running on a cluster
 
 [submit-cpu.sh](submit-cpu.sh) and [submit-gpu.sh](submit-gpu.sh) are Slurm array jobs that sweep the
-conditioning options for each solver. They expect the repository to live at
-`/scratch/htc/$USER/gpu-benchmark`; adjust the `cd` target and the `--partition` if yours differs.
+conditioning options for each solver.
+They expect the repository to live at `/scratch/htc/$USER/gpu-benchmark` (CPU) and `/scratch/gcp1/$USER/gpu-benchmark` (GPU); adjust the `cd` target and the `--partition` if yours differs.
 
 ```bash
 sbatch submit-cpu.sh
@@ -86,8 +86,11 @@ pixi run -e sync sync-send /scratch/htc/$USER/gpu-benchmark
 pixi run -e sync sync-receive '/scratch/htc/$USER/gpu-benchmark/results/*'
 ```
 
-`exclude-send.txt` and `exclude-receive.txt` control what each direction transfers — notably, models
-and results are not synced by default.
+`exclude-send.txt` and `exclude-receive.txt` control what each direction transfers — notably, models and results are not synced by default.
+
+>[!WARNING]
+>On ZIB, the GCP nodes do not recognise the `htc` scratch directory.
+>The `gcp` directory is significantly slower for IO so you should sync-send to both `gcp1` and `htc` and then sbatch from each of those separately for GPU and CPU tests, respectively.
 
 ## Development
 
