@@ -11,7 +11,6 @@ platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
 
 [dependencies]
-pypsa = ">=1.1.2,<2"
 ipython = ">=9.11.0,<10"
 tsam = ">=3.1.2"
 click = ">=8.1,<9"
@@ -40,7 +39,6 @@ gurobi = { version = ">=13.0.1,<14", channel = "gurobi" }
 highspy = { version = ">=1.13.2.dev0,<14", channel = "conda-forge/label/dev" }
 
 [feature.analyse.dependencies]
-pypsa = ">=1.1.2,<2"
 plotly = ">=6.6.0,<7"
 ipython = ">=9.11.0,<10"
 jupyter = ">=1.1.1,<2"
@@ -65,3 +63,6 @@ features = ["gpu", "cpu"]
 [environments.benchmark.tasks.benchmark]
 cmd = "python test_solve.py {{ model }}"
 args = ["model"]
+
+[pypi-dependencies]
+pypsa = { git = "https://github.com/lkstrp/PyPSA", branch = "scaling-v2" }

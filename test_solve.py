@@ -65,6 +65,7 @@ def optimize(
     log_path: Path,
     condition_dispatch: bool,
     condition_storage: bool,
+    scale: bool,
 ) -> float:
     """Optimize a network with the given solver.
 
@@ -75,6 +76,7 @@ def optimize(
         log_path (Path): Path to log file for solver output
         condition_dispatch (bool): Whether to condition the dispatch of generators and links by setting their marginal costs to a small value
         condition_storage (bool): Whether to condition the storage of generators and links by setting their marginal costs to a small value
+        scale (bool): Whether to scale the network before optimization
 
     Returns:
         float: Optimization time (including time to send to and receive from the solver)
@@ -109,6 +111,7 @@ def optimize(
         extra_functionality=CUSTOM_CONSTRAINTS_PATH[custom_constraints]
         if custom_constraints
         else None,
+        scaling=scale,
     )
     te = time()
     opt_time = te - ts
@@ -137,6 +140,7 @@ def optimize(
 @click.option("--dump_mps", is_flag=True, default=False)
 @click.option("--condition_dispatch", is_flag=True, default=False)
 @click.option("--condition_storage", is_flag=True, default=False)
+@click.option("--scale", is_flag=True, default=False)
 @click.option("--segment", type=int)
 def main(
     solver_name: str,
@@ -147,6 +151,7 @@ def main(
     dump_mps: bool,
     condition_dispatch: bool,
     condition_storage: bool,
+    scale: bool,
     segment: int | None,
 ):
     network = pypsa.Network(model_path)
@@ -159,7 +164,8 @@ def main(
         else ""
     )
     segmented = f"_segmented-{segment}" if segment is not None else ""
-    filename = f"{model_path.stem}_{solver_name}{conditioned}{segmented}.nc"
+    scaled = "_scaled" if scale else ""
+    filename = f"{model_path.stem}_{solver_name}{conditioned}{segmented}{scaled}.nc"
 
     opt_time = optimize(
         network,
@@ -168,6 +174,7 @@ def main(
         (log_dir / filename).with_suffix(".log"),
         condition_dispatch,
         condition_storage,
+        scale,
     )
     outpath = output_dir / filename
     network.export_to_netcdf(outpath)
