@@ -8,9 +8,7 @@ The aim is to compare wall-clock solve time and solution quality for the same ne
 - **[Gurobi](https://www.gurobi.com)** — barrier method, crossover disabled.
 - **[HiGHS](https://highs.dev)** — the `hipo` interior point solver, crossover disabled.
 
-Because first-order methods are sensitive to problem conditioning, the benchmark can optionally
-"condition" a network by giving otherwise cost-free dispatch and storage decisions a small marginal
-cost, which removes degeneracy in the objective.
+Because first-order methods are sensitive to problem conditioning, the benchmark can optionally "condition" a network by giving otherwise cost-free dispatch and storage decisions a small marginal cost, which removes degeneracy in the objective.
 
 This repository has been built around benchmarking models derived from the [gb-dispatch-model PyPSA workflow](https://github.com/open-energy-transition/gb-dispatch-model).
 
@@ -63,21 +61,52 @@ Options:
 | `--dump_mps` | Also write the model out in MPS format. |
 | `--log_dir` / `--output_dir` | Override the default `logs/` and `results/` directories. |
 
-Each run appends `{filename: seconds}` to `results/timings.yaml` and writes the solved network to
-`results/`, with the applied conditioning and segmentation encoded in the filename.
+Each run appends `{filename: seconds}` to `results/timings.yaml` and writes the solved network to `results/`, with the applied conditioning and segmentation encoded in the filename.
 
 All solvers are given a 1800 s time limit (`TIMELIMIT` in [test_solve.py](test_solve.py)).
 
 ## Running on a cluster
 
-[submit-cpu.sh](submit-cpu.sh) and [submit-gpu.sh](submit-gpu.sh) are Slurm array jobs that sweep the
-conditioning options for each solver.
+[submit-cpu.sh](submit-cpu.sh) and [submit-gpu.sh](submit-gpu.sh) are Slurm array jobs that sweep the conditioning options for each solver.
 They expect the repository to live at `/scratch/htc/$USER/gpu-benchmark` (CPU) and `/scratch/gcp1/$USER/gpu-benchmark` (GPU); adjust the `cd` target and the `--partition` if yours differs.
 
 ```bash
 sbatch submit-cpu.sh
 sbatch submit-gpu.sh
 ```
+
+### Pixi on the cluster
+
+Every persistent filesystem on ZIB is a network filesystem — `$HOME` and `/scratch/gcp1` are NFS, `/scratch/htc` is HDD-backed CephFS.
+The pixi package cache is thousands of small files and is painfully slow on all of them.
+Point it at node-local storage instead, once, in your user-level pixi config:
+
+```bash
+pixi config set --global cache-dir /tmp/gpu-benchmark-$USER
+```
+
+This writes to `~/.config/pixi/config.toml` and applies to every `pixi install` on that machine.
+
+Install on a **login node** and run on the **compute nodes** — the cache does not need to be shared between them:
+
+- the cache (`/tmp/gpu-benchmark-$USER`) is only read at install time, and can stay node-local;
+- the environment (`.pixi/envs/`) is created next to `pixi.toml` in the scratch checkout, so it is on shared storage and the compute nodes pick it up.
+
+Because the two are on different filesystems, pixi copies packages into the environment rather than hardlinking them, so the environment stays intact when `/tmp` is cleared.
+
+The submit scripts use `pixi run --frozen`, which takes the environment as-is instead of re-solving against `pixi.lock`.
+Without it, a job that thinks something is missing would try to re-download into an empty cache on the compute node.
+Re-run `pixi install` on the login node after changing dependencies.
+
+>[!WARNING]
+>`/tmp` is `tmpfs`, i.e. RAM, not disk — a populated cache is several GB of memory held on a shared login node until it reboots.
+>Release it once the environments are installed:
+>
+>```bash
+>pixi clean cache
+>```
+>
+>`/tmp` is also per-node, so a different login node means a cold cache and a full re-download.
 
 The `sync` environment wraps rsync for moving code to and results back from the cluster:
 
@@ -94,8 +123,7 @@ pixi run -e sync sync-receive '/scratch/htc/$USER/gpu-benchmark/results/*'
 
 ## Development
 
-Pre-commit checks are managed with [lefthook](https://lefthook.dev) and run [ruff](https://docs.astral.sh/ruff/)
-plus [nbstripout](https://github.com/kynan/nbstripout) on staged files:
+Pre-commit checks are managed with [lefthook](https://lefthook.dev) and run [ruff](https://docs.astral.sh/ruff/) plus [nbstripout](https://github.com/kynan/nbstripout) on staged files:
 
 ```bash
 pixi run -e lint lefthook install   # once, to register the git hook

@@ -30,7 +30,7 @@ for model in "${MODELS[@]}"; do
     for solver in "${SOLVERS[@]}"; do
         for condition in "${CONDITIONS[@]}"; do
             for scaling in "${SCALINGS[@]}"; do
-                CMDS+=("pixi run -e cpu python test_solve.py ${solver} models/${model}_2030.nc --custom_constraints ${model} ${condition} ${scaling}")
+                CMDS+=("pixi run --frozen -e cpu python test_solve.py ${solver} models/${model}_2030.nc --custom_constraints ${model} ${condition} ${scaling}")
             done
         done
     done

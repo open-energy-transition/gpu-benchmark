@@ -5,7 +5,7 @@
 
 [workspace]
 authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
-channels = ["conda-forge", "gurobi", "conda-forge/label/dev"]
+channels = ["rapidsai", "conda-forge", "gurobi", "conda-forge/label/dev", "nvidia", ]
 name = "gpu-benchmark"
 platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
@@ -19,6 +19,8 @@ yaml = ">=0.2.5,<0.3"
 [feature.gpu.target.linux-64.dependencies]
 cuda-nvcc = ">=13.2.51,<14"
 cuda = ">=13.2.0,<14"
+cuopt-server = { version = ">=26.8.0,<27", channel = "nvidia" }
+cuopt-sh-client = { version = ">=26.8.0,<27", channel = "nvidia" }
 [feature.gpu.dependencies]
 gcc = ">=15.2.0,<15.3"
 cmake = ">=4.2.3,<5"

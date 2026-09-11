@@ -19,6 +19,15 @@ from extras import dispatch_fn, redispatch_fn
 SMALL_N = 0.01
 TIMELIMIT = 1800
 SOLVER_OPTIONS: dict[str, dict[str, Any]] = {
+    "cuopt": {
+        # method 1 = PDLP, to compare like-for-like with cupdlpx
+        # (linopy's default is 3 = Barrier).
+        "method": 1,
+        "relative_primal_tolerance": 1e-6,
+        "relative_dual_tolerance": 1e-6,
+        "relative_gap_tolerance": 1e-5,
+        "time_limit": TIMELIMIT,
+    },
     "cupdlpx": {
         "io_api": "direct",
         "OptimalityTol": 1e-5,

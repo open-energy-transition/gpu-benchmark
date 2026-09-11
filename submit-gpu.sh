@@ -8,7 +8,7 @@
 #SBATCH --job-name=cpu-solve
 #SBATCH --output=logs/%x_%A_%a.out
 #SBATCH --error=logs/%x_%A_%a.err
-#SBATCH --array=0-11
+#SBATCH --array=0-23
 #SBATCH --time=01:00:00
 #SBATCH --partition=gcp1-gpu
 #SBATCH --gpus=1
@@ -18,18 +18,21 @@
 # Network filepath - update this with your actual network file path
 cd "/scratch/gcp1/${USER}/gpu-benchmark" || { echo "Error: failed to cd to /scratch/gcp1/${USER}/gpu-benchmark"; exit 1; }
 
-# Build the full matrix of commands: model x conditioning x scaling.
+# Build the full matrix of commands: model x solver x conditioning x scaling.
 # Keep the array directive above in sync with the number of commands generated
-# (currently 2 models x 3 conditionings x 2 scalings = 12, i.e. 0-11).
+# (currently 2 models x 2 solvers x 3 conditionings x 2 scalings = 24, i.e. 0-23).
 MODELS=("dispatch" "redispatch")
+SOLVERS=("cupdlpx" "cuopt")
 CONDITIONS=("" "--condition_dispatch" "--condition_dispatch --condition_storage")
 SCALINGS=("" "--scale")
 
 CMDS=()
 for model in "${MODELS[@]}"; do
-    for condition in "${CONDITIONS[@]}"; do
-        for scaling in "${SCALINGS[@]}"; do
-            CMDS+=("pixi run -e gpu python test_solve.py cupdlpx models/${model}_2030.nc --custom_constraints ${model} ${condition} ${scaling}")
+    for solver in "${SOLVERS[@]}"; do
+        for condition in "${CONDITIONS[@]}"; do
+            for scaling in "${SCALINGS[@]}"; do
+                CMDS+=("pixi run --frozen -e gpu python test_solve.py ${solver} models/${model}_2030.nc --custom_constraints ${model} ${condition} ${scaling}")
+            done
         done
     done
 done
